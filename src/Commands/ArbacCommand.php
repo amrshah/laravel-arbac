@@ -8,11 +8,11 @@ class ArbacCommand extends Command
 {
     public $signature = 'arbac';
 
-    public $description = 'My command';
+    public $description = 'Arbac command';
 
     public function handle(): int
     {
-        $this->comment('All done');
+        $this->comment('Welcome to the ARBAC package!');
 
         return self::SUCCESS;
     }

@@ -5,20 +5,11 @@ namespace Amrshah\Arbac;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Amrshah\Arbac\Commands\ArbacCommand;
-
+use Amrshah\Arbac\Commands\MakeRuleCommand;
+use Amrshah\Arbac\ArbacManager;
 class ArbacServiceProvider extends PackageServiceProvider
 {
-    public function boot(): void
-    {
-        // publish config
-        $this->publishes([
-            __DIR__.'/../config/arbac.php' => config_path('arbac.php'),
-        ], 'arbac-config');
 
-        // load routes/views 
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'arbac');
-        // $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-    }
 
     public function configurePackage(Package $package): void
     {
@@ -32,6 +23,8 @@ class ArbacServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_arbac_table')
-            ->hasCommand(ArbacCommand::class);
+            ->hasCommand(\Amrshah\Arbac\Commands\ArbacCommand::class)
+            ->hasCommand(\Amrshah\Arbac\Commands\MakeRuleCommand::class);
     }
+
 }
