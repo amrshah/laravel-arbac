@@ -1,0 +1,21 @@
+<?php
+
+namespace DummyNamespace;
+
+use Amrshah\Arbac\Contracts\AttributeRuleInterface;
+use Illuminate\Contracts\Auth\Authenticatable;
+
+class DummyClass implements AttributeRuleInterface
+{
+    public function supports(string $permission): bool
+    {
+        // TODO: Add logic to declare which permissions this rule applies to
+        return false;
+    }
+
+    public function check(Authenticatable $user, string $permission, array $context = []): bool
+    {
+        // TODO: Add your ABAC evaluation logic here
+        return false;
+    }
+}

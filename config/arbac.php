@@ -45,8 +45,10 @@ return [
     */
 
     'attribute_rules' => [
-        // 'rule_name' => \App\ArbacRules\SomeRule::class,
+        \App\Arbac\Rules\PostOwnerRule::class,
+        \App\Arbac\Rules\DepartmentRule::class,
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -63,5 +65,20 @@ return [
         'middleware' => ['web', 'auth'],
         'blade_prefix' => 'arbac::', // where Blade views are published
     ],
+
+        /*
+    |--------------------------------------------------------------------------
+    | Default Guard
+    |--------------------------------------------------------------------------
+    |
+    | This is the guard name ARBAC will use for roles/permissions.
+    | Typically this is "web", but you can change it if needed.
+    |
+    */
+
+    'guard' => 'web',
+
+   
+
 
 ];

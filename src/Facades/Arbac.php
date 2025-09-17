@@ -11,6 +11,6 @@ class Arbac extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Amrshah\Arbac\Arbac::class;
+        return \Amrshah\Arbac\ArbacManager::class;
     }
 }
