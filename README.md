@@ -82,7 +82,7 @@ ARBAC checks both role-based permissions and any registered attribute rules befo
 composer test
 
 
-The skeleton uses Pest by default.
+The laravel-arbac uses Pest by default.
 
 ### License
 
