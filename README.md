@@ -1,4 +1,4 @@
-# ARBAC – Attribute/Role-Based Access Control for Laravel
+# ARBAC – Advanced Attribute/Role-Based Access Control for Laravel
 
 [![Tests](https://github.com/amrshah/arbac/actions/workflows/run-tests.yml/badge.svg)](https://github.com/amrshah/arbac/actions)
 
