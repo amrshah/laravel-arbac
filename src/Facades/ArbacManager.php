@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Amrshah\Arbac\Arbac
  */
-class Arbac extends Facade
+class ArbacManager extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
