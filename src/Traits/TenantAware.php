@@ -12,7 +12,7 @@ trait TenantAware
         if (function_exists('tenant') && tenant()) {
             return $query->where('tenant_id', tenant('id'));
         }
-        
+
         return $query;
     }
 
@@ -24,7 +24,7 @@ trait TenantAware
         if (function_exists('tenant') && tenant()) {
             return tenant('id');
         }
-        
+
         return null;
     }
 

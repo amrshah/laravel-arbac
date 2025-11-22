@@ -3,8 +3,8 @@
 namespace Amrshah\Arbac\Rules;
 
 use Amrshah\Arbac\Contracts\AttributeRuleInterface;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class TimeBasedRule implements AttributeRuleInterface
 {

@@ -12,6 +12,7 @@ trait HasCache
     protected function getCacheKey(string $type, $identifier): string
     {
         $tenantId = function_exists('tenant') && tenant() ? tenant('id') : 'global';
+
         return "arbac:{$tenantId}:{$type}:{$identifier}";
     }
 
@@ -20,16 +21,16 @@ trait HasCache
      */
     protected function cachePermissionCheck($user, string $permission, bool $result): void
     {
-        if (!config('arbac.cache.enabled', true)) {
+        if (! config('arbac.cache.enabled', true)) {
             return;
         }
 
         $key = $this->getCacheKey('permission', "{$user->id}:{$permission}");
         $ttl = config('arbac.cache.ttl', 3600);
         $store = config('arbac.cache.store', 'default');
-        
+
         $cache = Cache::store($store);
-        
+
         if (method_exists($cache, 'tags')) {
             $cache->tags(["user:{$user->id}", 'arbac'])->put($key, $result, $ttl);
         } else {
@@ -42,19 +43,19 @@ trait HasCache
      */
     public function getCachedPermissionCheck($user, string $permission): ?bool
     {
-        if (!config('arbac.cache.enabled', true)) {
+        if (! config('arbac.cache.enabled', true)) {
             return null;
         }
 
         $key = $this->getCacheKey('permission', "{$user->id}:{$permission}");
         $store = config('arbac.cache.store', 'default');
-        
+
         $cache = Cache::store($store);
-        
+
         if (method_exists($cache, 'tags')) {
             return $cache->tags(["user:{$user->id}", 'arbac'])->get($key);
         }
-        
+
         return $cache->get($key);
     }
 
@@ -63,17 +64,17 @@ trait HasCache
      */
     public function flushUserPermissions($user): void
     {
-        if (!config('arbac.cache.enabled', true)) {
+        if (! config('arbac.cache.enabled', true)) {
             return;
         }
 
         $tenantId = function_exists('tenant') && tenant() ? tenant('id') : 'global';
         $pattern = "arbac:{$tenantId}:permission:{$user->id}:*";
-        
+
         // Note: This requires Redis or a cache driver that supports pattern deletion
         $store = config('arbac.cache.store', 'default');
         $cache = Cache::store($store);
-        
+
         if (method_exists($cache, 'tags')) {
             $cache->tags(["user:{$user->id}"])->flush();
         }
@@ -84,13 +85,13 @@ trait HasCache
      */
     public function flushAllCache(): void
     {
-        if (!config('arbac.cache.enabled', true)) {
+        if (! config('arbac.cache.enabled', true)) {
             return;
         }
 
         $store = config('arbac.cache.store', 'default');
         $cache = Cache::store($store);
-        
+
         if (method_exists($cache, 'tags')) {
             $cache->tags(['arbac'])->flush();
         }

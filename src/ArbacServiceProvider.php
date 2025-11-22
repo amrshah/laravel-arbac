@@ -2,13 +2,10 @@
 
 namespace Amrshah\Arbac;
 
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Amrshah\Arbac\Commands\ArbacCommand;
-use Amrshah\Arbac\Commands\MakeRuleCommand;
-use Amrshah\Arbac\ArbacManager;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Routing\Router;
 
 class ArbacServiceProvider extends PackageServiceProvider
 {
@@ -34,8 +31,9 @@ class ArbacServiceProvider extends PackageServiceProvider
     {
         // Bind ArbacManager as singleton
         $this->app->singleton('arbac', function ($app) {
-            $manager = new ArbacManager();
+            $manager = new ArbacManager;
             $manager->loadAttributeRulesFromConfig();
+
             return $manager;
         });
 
@@ -55,7 +53,7 @@ class ArbacServiceProvider extends PackageServiceProvider
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('arbac', \Amrshah\Arbac\Http\Middleware\CheckPermission::class);
         $router->aliasMiddleware('role', \Amrshah\Arbac\Http\Middleware\CheckRole::class);
-        
+
         // Context-aware middleware
         $router->aliasMiddleware('arbac.context', \Amrshah\Arbac\Http\Middleware\CheckPermissionWithContext::class);
         $router->aliasMiddleware('arbac.ip', \Amrshah\Arbac\Http\Middleware\CheckIpRestricted::class);
@@ -73,7 +71,7 @@ class ArbacServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('endarbac', function () {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         // @hasrole('admin')
@@ -82,7 +80,7 @@ class ArbacServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('endhasrole', function () {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         // @haspermission('users.create')
@@ -91,7 +89,7 @@ class ArbacServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('endhaspermission', function () {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         // @unlessrole('admin')
@@ -100,7 +98,7 @@ class ArbacServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('endunlessrole', function () {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
     }
 }

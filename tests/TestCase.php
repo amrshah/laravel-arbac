@@ -14,14 +14,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         // Create class alias so tests can use \App\Models\User
-        if (!class_exists(\App\Models\User::class)) {
+        if (! class_exists(\App\Models\User::class)) {
             class_alias(\Workbench\App\Models\User::class, \App\Models\User::class);
         }
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Amrshah\\Arbac\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
-        
+
         // Clear permission cache
         $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
     }
@@ -36,8 +36,8 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../tests/database/migrations');
-        
+        $this->loadMigrationsFrom(__DIR__.'/../tests/database/migrations');
+
         // Run Spatie permission migrations
         $permissionMigration = include __DIR__.'/../vendor/spatie/laravel-permission/database/migrations/create_permission_tables.php.stub';
         $permissionMigration->up();
@@ -59,9 +59,9 @@ class TestCase extends Orchestra
 
         // Use in-memory SQLite database for testing
         config()->set('database.connections.testing', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         // Use array cache driver for testing
@@ -73,7 +73,7 @@ class TestCase extends Orchestra
 
         // Configure Spatie Permission to use array cache
         config()->set('permission.cache.store', 'array');
-        
+
         // Configure ARBAC to use array cache
         config()->set('arbac.cache.store', 'array');
 

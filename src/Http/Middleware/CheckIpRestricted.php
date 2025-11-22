@@ -2,9 +2,9 @@
 
 namespace Amrshah\Arbac\Http\Middleware;
 
+use Amrshah\Arbac\Facades\Arbac;
 use Closure;
 use Illuminate\Http\Request;
-use Amrshah\Arbac\Facades\Arbac;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckIpRestricted
@@ -20,7 +20,7 @@ class CheckIpRestricted
     {
         $guard = config('arbac.guard', 'web');
 
-        if (!auth($guard)->check()) {
+        if (! auth($guard)->check()) {
             abort(403, 'Unauthenticated.');
         }
 
@@ -28,7 +28,7 @@ class CheckIpRestricted
         $configKey = $configKey ?? 'arbac.ip_whitelist';
         $allowedIps = config($configKey, []);
 
-        if (!Arbac::check($user, $permission, ['allowed_ips' => $allowedIps])) {
+        if (! Arbac::check($user, $permission, ['allowed_ips' => $allowedIps])) {
             abort(403, 'Access denied from this IP address.');
         }
 

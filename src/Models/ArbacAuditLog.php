@@ -26,10 +26,10 @@ class ArbacAuditLog extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->external_id)) {
-                $model->external_id = 'AUD_' . self::generateNanoId();
+                $model->external_id = 'AUD_'.self::generateNanoId();
             }
         });
     }
@@ -42,7 +42,7 @@ class ArbacAuditLog extends Model
         if (class_exists('\Hidehalo\Nanoid\Client')) {
             return \Hidehalo\Nanoid\Client::generateId(14);
         }
-        
+
         // Fallback to a simple unique ID
         return strtoupper(substr(uniqid(), -14));
     }
@@ -85,6 +85,7 @@ class ArbacAuditLog extends Model
     public function scopeForUser($query, $user)
     {
         $userId = is_object($user) ? $user->id : $user;
+
         return $query->where('user_id', $userId);
     }
 
@@ -96,7 +97,7 @@ class ArbacAuditLog extends Model
         if (function_exists('tenant') && tenant()) {
             return $query->where('tenant_id', tenant('id'));
         }
-        
+
         return $query;
     }
 }

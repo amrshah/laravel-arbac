@@ -2,8 +2,8 @@
 
 namespace Amrshah\Arbac\Observers;
 
-use Spatie\Permission\Models\Role;
 use Amrshah\Arbac\Facades\Arbac;
+use Spatie\Permission\Models\Role;
 
 class RoleObserver
 {

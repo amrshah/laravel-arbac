@@ -1,13 +1,14 @@
 <?php
+
 namespace Amrshah\Arbac;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Amrshah\Arbac\Contracts\AttributeRuleInterface;
+use Amrshah\Arbac\Models\ArbacAuditLog;
 use Amrshah\Arbac\Traits\HasCache;
 use Amrshah\Arbac\Traits\TenantAware;
-use Amrshah\Arbac\Models\ArbacAuditLog;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class ArbacManager
 {
@@ -20,7 +21,7 @@ class ArbacManager
 
     public static function hello()
     {
-        return "Hello from ARbac package!";
+        return 'Hello from ARbac package!';
     }
 
     public static function assignRole($user, $role)
@@ -35,20 +36,17 @@ class ArbacManager
 
     /**
      * Determine if tenant check should be bypassed for user
-     *
-     * @param Authenticatable $user
-     * @return bool
      */
     public function shouldBypassTenantFor(Authenticatable $user): bool
     {
         $bypassRoles = config('arbac.multi_tenancy.bypass_roles', ['super_admin']);
-        
+
         foreach ($bypassRoles as $role) {
             if ($user->hasRole($role)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -63,18 +61,15 @@ class ArbacManager
      *  - Log the result (if audit enabled)
      *  - Cache the result (if caching enabled)
      *
-     * @param Authenticatable $user
-     * @param string $permission
-     * @param array $attributes
-     * @return bool
+     * @param  array  $attributes
      */
     public function check(Authenticatable $user, string $permission, array $context = []): bool
     {
         // Add tenant context automatically if multi-tenancy is enabled
         // UNLESS user should bypass tenant checks
-        if ($this->isMultiTenancyEnabled() 
-            && !$this->shouldBypassTenantFor($user)
-            && function_exists('tenant') 
+        if ($this->isMultiTenancyEnabled()
+            && ! $this->shouldBypassTenantFor($user)
+            && function_exists('tenant')
             && tenant()) {
             $context['tenant_id'] = tenant('id');
         }
@@ -83,6 +78,7 @@ class ArbacManager
         $cached = $this->getCachedPermissionCheck($user, $permission);
         if ($cached !== null) {
             $this->logPermissionCheck($user, $permission, $cached, 'cache', $context);
+
             return $cached;
         }
 
@@ -160,23 +156,22 @@ class ArbacManager
         }
     }
 
-
     /**
      * Log permission check for audit trail
      */
     protected function logPermissionCheck($user, string $permission, bool $granted, string $method, array $context = []): void
     {
-        if (!config('arbac.audit.enabled', false)) {
+        if (! config('arbac.audit.enabled', false)) {
             return;
         }
 
         // Skip logging granted permissions if configured
-        if ($granted && !config('arbac.audit.log_granted', true)) {
+        if ($granted && ! config('arbac.audit.log_granted', true)) {
             return;
         }
 
         // Skip logging denied permissions if configured
-        if (!$granted && !config('arbac.audit.log_denied', true)) {
+        if (! $granted && ! config('arbac.audit.log_denied', true)) {
             return;
         }
 
@@ -194,10 +189,10 @@ class ArbacManager
         } catch (\Exception $e) {
             // Silently fail to not break the application
             if (config('app.debug')) {
-                logger()->error('ARBAC audit log failed: ' . $e->getMessage());
+                logger()->error('ARBAC audit log failed: '.$e->getMessage());
             }
         }
-    }   
+    }
 
     /**
      * Sync permissions for a given role.
@@ -215,7 +210,6 @@ class ArbacManager
      * Check if a user has a permission (with optional ABAC attributes).
      * For now it only checks RBAC. Later you’ll plug ABAC logic here.
      */
-   
 
     /**
      * Convenience: create a permission if it doesn’t exist yet.
@@ -224,5 +218,4 @@ class ArbacManager
     {
         return Permission::findOrCreate($permission);
     }
-
 }

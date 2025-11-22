@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     /*
@@ -30,8 +31,8 @@ return [
     'cache' => [
         'enabled' => env('ARBAC_CACHE_ENABLED', true),
         'auto_invalidate' => env('ARBAC_CACHE_AUTO_INVALIDATE', true),
-        'store'   => env('ARBAC_CACHE_STORE', 'default'),
-        'ttl'     => env('ARBAC_CACHE_TTL', 3600), // seconds
+        'store' => env('ARBAC_CACHE_STORE', 'default'),
+        'ttl' => env('ARBAC_CACHE_TTL', 3600), // seconds
     ],
 
     /*
@@ -60,9 +61,9 @@ return [
     */
 
     'audit' => [
-        'enabled'     => env('ARBAC_AUDIT_ENABLED', false),
+        'enabled' => env('ARBAC_AUDIT_ENABLED', false),
         'log_granted' => env('ARBAC_AUDIT_LOG_GRANTED', true),
-        'log_denied'  => env('ARBAC_AUDIT_LOG_DENIED', true),
+        'log_denied' => env('ARBAC_AUDIT_LOG_DENIED', true),
     ],
 
     /*
@@ -98,7 +99,6 @@ return [
         // 'manager' => ['member'],
     ],
 
-
     /*
     |--------------------------------------------------------------------------
     | UI Settings
@@ -110,8 +110,8 @@ return [
     */
 
     'ui' => [
-        'enabled'      => true,
-        'middleware'   => ['web', 'auth'],
+        'enabled' => true,
+        'middleware' => ['web', 'auth'],
         'blade_prefix' => 'arbac::', // where Blade views are published
     ],
 
@@ -137,7 +137,7 @@ return [
     |
     */
 
-    'ip_whitelist' => env('ARBAC_IP_WHITELIST') 
+    'ip_whitelist' => env('ARBAC_IP_WHITELIST')
         ? explode(',', env('ARBAC_IP_WHITELIST'))
         : [],
 

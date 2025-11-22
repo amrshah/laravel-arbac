@@ -7,7 +7,7 @@ use Amrshah\Arbac\Facades\Arbac;
 /**
  * Add this trait to your User model to automatically
  * invalidate ARBAC cache when user roles change
- * 
+ *
  * Usage:
  * class User extends Authenticatable
  * {

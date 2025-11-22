@@ -2,9 +2,9 @@
 
 namespace Amrshah\Arbac\Http\Middleware;
 
+use Amrshah\Arbac\Facades\Arbac;
 use Closure;
 use Illuminate\Http\Request;
-use Amrshah\Arbac\Facades\Arbac;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckPermissionWithContext
@@ -20,18 +20,18 @@ class CheckPermissionWithContext
     {
         $guard = config('arbac.guard', 'web');
 
-        if (!auth($guard)->check()) {
+        if (! auth($guard)->check()) {
             abort(403, 'Unauthenticated.');
         }
 
         $user = auth($guard)->user();
-        
+
         // Load context from config if specified, otherwise use request data
-        $context = $contextConfig 
+        $context = $contextConfig
             ? config($contextConfig, [])
             : $request->all();
 
-        if (!Arbac::check($user, $permission, $context)) {
+        if (! Arbac::check($user, $permission, $context)) {
             abort(403, 'Unauthorized action.');
         }
 

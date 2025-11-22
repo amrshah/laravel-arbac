@@ -2,9 +2,9 @@
 
 namespace Amrshah\Arbac\Http\Middleware;
 
+use Amrshah\Arbac\Facades\Arbac;
 use Closure;
 use Illuminate\Http\Request;
-use Amrshah\Arbac\Facades\Arbac;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckTimeRestricted
@@ -20,7 +20,7 @@ class CheckTimeRestricted
     {
         $guard = config('arbac.guard', 'web');
 
-        if (!auth($guard)->check()) {
+        if (! auth($guard)->check()) {
             abort(403, 'Unauthenticated.');
         }
 
@@ -32,7 +32,7 @@ class CheckTimeRestricted
             'timezone' => config('app.timezone', 'UTC'),
         ]);
 
-        if (!Arbac::check($user, $permission, $timeWindow)) {
+        if (! Arbac::check($user, $permission, $timeWindow)) {
             abort(403, 'Access denied outside allowed time window.');
         }
 

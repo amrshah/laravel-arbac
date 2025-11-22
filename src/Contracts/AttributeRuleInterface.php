@@ -16,10 +16,8 @@ interface AttributeRuleInterface
     /**
      * Evaluate the rule for the given user, permission and context.
      *
-     * @param Authenticatable $user
-     * @param string $permission
-     * @param array $context  // arbitrary attributes, e.g. ['post' => $post, 'tenant_id' => 5]
-     * @return bool  // return true to grant access (false to not grant)
+     * @param  array  $context  // arbitrary attributes, e.g. ['post' => $post, 'tenant_id' => 5]
+     * @return bool // return true to grant access (false to not grant)
      */
     public function check(Authenticatable $user, string $permission, array $context = []): bool;
 }

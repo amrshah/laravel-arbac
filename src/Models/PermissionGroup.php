@@ -3,7 +3,6 @@
 namespace Amrshah\Arbac\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PermissionGroup extends Model
 {
@@ -12,7 +11,7 @@ class PermissionGroup extends Model
         'description',
         'permissions',
     ];
-    
+
     protected $casts = [
         'permissions' => 'array',
     ];
@@ -43,7 +42,7 @@ class PermissionGroup extends Model
     public function getPermissionModels()
     {
         $permissionClass = config('arbac.models.permission', \Spatie\Permission\Models\Permission::class);
-        
+
         return $permissionClass::whereIn('name', $this->permissions)->get();
     }
 
@@ -55,7 +54,7 @@ class PermissionGroup extends Model
         if (function_exists('tenant') && tenant()) {
             return $query->where('tenant_id', tenant('id'));
         }
-        
+
         return $query;
     }
 }

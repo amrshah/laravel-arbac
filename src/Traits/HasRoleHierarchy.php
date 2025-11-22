@@ -10,20 +10,20 @@ trait HasRoleHierarchy
     public function hasRoleOrHigher(string $role): bool
     {
         $hierarchy = config('arbac.role_hierarchy', []);
-        
+
         foreach ($this->roles as $userRole) {
             // Direct match
             if ($userRole->name === $role) {
                 return true;
             }
-            
+
             // Check if user's role is higher in hierarchy
             $subordinates = $hierarchy[$userRole->name] ?? [];
             if (in_array($role, $subordinates)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -34,15 +34,15 @@ trait HasRoleHierarchy
     {
         $hierarchy = config('arbac.role_hierarchy', []);
         $allRoles = [];
-        
+
         foreach ($this->roles as $userRole) {
             $allRoles[] = $userRole->name;
-            
+
             // Add subordinate roles
             $subordinates = $hierarchy[$userRole->name] ?? [];
             $allRoles = array_merge($allRoles, $subordinates);
         }
-        
+
         return array_unique($allRoles);
     }
 }

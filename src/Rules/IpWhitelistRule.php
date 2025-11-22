@@ -61,13 +61,13 @@ class IpWhitelistRule implements AttributeRuleInterface
      */
     protected function ipInRange(string $ip, string $range): bool
     {
-        list($subnet, $mask) = explode('/', $range);
-        
+        [$subnet, $mask] = explode('/', $range);
+
         $ip_long = ip2long($ip);
         $subnet_long = ip2long($subnet);
-        $mask_long = -1 << (32 - (int)$mask);
+        $mask_long = -1 << (32 - (int) $mask);
         $subnet_long &= $mask_long;
-        
+
         return ($ip_long & $mask_long) === $subnet_long;
     }
 }
