@@ -5,9 +5,13 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Amrshah\Arbac\Contracts\AttributeRuleInterface;
+use Amrshah\Arbac\Traits\HasCache;
+use Amrshah\Arbac\Traits\TenantAware;
+use Amrshah\Arbac\Models\ArbacAuditLog;
 
 class ArbacManager
 {
+    use HasCache, TenantAware;
 
     /**
      * @var AttributeRuleInterface[]
@@ -29,37 +33,94 @@ class ArbacManager
         return $user->removeRole($role);
     }
 
-        /**
+    /**
+     * Determine if tenant check should be bypassed for user
+     *
+     * @param Authenticatable $user
+     * @return bool
+     */
+    public function shouldBypassTenantFor(Authenticatable $user): bool
+    {
+        $bypassRoles = config('arbac.multi_tenancy.bypass_roles', ['super_admin']);
+        
+        foreach ($bypassRoles as $role) {
+            if ($user->hasRole($role)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
      * Check if a user has a permission (RBAC + ABAC).
      *
      * Behavior:
+     *  - Check cache first (if enabled)
      *  - If RBAC (spatie) allows => grant.
      *  - Otherwise iterate registered ABAC rules that "support" this permission.
      *    If any rule returns true => grant. Otherwise deny.
+     *  - Log the result (if audit enabled)
+     *  - Cache the result (if caching enabled)
      *
      * @param Authenticatable $user
      * @param string $permission
      * @param array $attributes
      * @return bool
      */
-    public function check(Authenticatable $user, string $permission, array $attributes = []): bool
+    public function check(Authenticatable $user, string $permission, array $context = []): bool
     {
-        // Fast path: roles/permissions via spatie
-        if ($user->can($permission)) {
-            return true;
+        // Add tenant context automatically if multi-tenancy is enabled
+        // UNLESS user should bypass tenant checks
+        if ($this->isMultiTenancyEnabled() 
+            && !$this->shouldBypassTenantFor($user)
+            && function_exists('tenant') 
+            && tenant()) {
+            $context['tenant_id'] = tenant('id');
         }
 
-        // Evaluate attribute rules (ABAC)
+        // Check cache first
+        $cached = $this->getCachedPermissionCheck($user, $permission);
+        if ($cached !== null) {
+            $this->logPermissionCheck($user, $permission, $cached, 'cache', $context);
+            return $cached;
+        }
+
+        $granted = false;
+        $method = 'denied';
+
+        // Find applicable rules
+        $applicableRules = [];
         foreach ($this->attributeRuleInstances as $rule) {
             if ($rule->supports($permission)) {
-                if ($rule->check($user, $permission, $attributes)) {
-                    return true;
+                $applicableRules[] = $rule;
+            }
+        }
+
+        if (empty($applicableRules)) {
+            // No rules -> Pure RBAC
+            if ($user->can($permission)) {
+                $granted = true;
+                $method = 'rbac';
+            }
+        } else {
+            // Rules exist -> OR logic
+            foreach ($applicableRules as $rule) {
+                if ($rule->check($user, $permission, $context)) {
+                    $granted = true;
+                    $method = get_class($rule);
+                    break;
                 }
             }
         }
 
-        // default deny
-        return false;
+        // Cache the result
+        $this->cachePermissionCheck($user, $permission, $granted);
+
+        // Log the permission check
+        $this->logPermissionCheck($user, $permission, $granted, $method, $context);
+
+        return $granted;
     }
 
     /**
@@ -100,10 +161,42 @@ class ArbacManager
     }
 
 
-    protected static function checkAttributes($user, string $permission, array $attributes)
+    /**
+     * Log permission check for audit trail
+     */
+    protected function logPermissionCheck($user, string $permission, bool $granted, string $method, array $context = []): void
     {
-        // ABAC logic placeholder
-        return false;
+        if (!config('arbac.audit.enabled', false)) {
+            return;
+        }
+
+        // Skip logging granted permissions if configured
+        if ($granted && !config('arbac.audit.log_granted', true)) {
+            return;
+        }
+
+        // Skip logging denied permissions if configured
+        if (!$granted && !config('arbac.audit.log_denied', true)) {
+            return;
+        }
+
+        try {
+            ArbacAuditLog::create([
+                'tenant_id' => $this->getCurrentTenantId(),
+                'user_id' => $user->getAuthIdentifier(),
+                'permission' => $permission,
+                'action' => $granted ? 'granted' : 'denied',
+                'method' => $method,
+                'context' => $context,
+                'ip_address' => request()?->ip(),
+                'user_agent' => request()?->userAgent(),
+            ]);
+        } catch (\Exception $e) {
+            // Silently fail to not break the application
+            if (config('app.debug')) {
+                logger()->error('ARBAC audit log failed: ' . $e->getMessage());
+            }
+        }
     }   
 
     /**

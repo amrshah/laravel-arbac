@@ -2,9 +2,9 @@
 
 use Amrshah\Arbac\ArbacManager;
 use App\Arbac\Rules\PostOwnerRule;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(RefreshDatabase::class);
+
+
 
 it('grants permission via ABAC rule when RBAC denies', function () {
     $user = \App\Models\User::factory()->create();
