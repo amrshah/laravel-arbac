@@ -13,7 +13,7 @@ return [
     */
 
     'models' => [
-        'user' => App\Models\User::class,
+        'user' => null, // Leave null to use default auth user model
         'role' => Amrshah\Arbac\Models\Role::class,
         'permission' => Amrshah\Arbac\Models\Permission::class,
     ],

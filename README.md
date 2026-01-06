@@ -8,7 +8,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 - ✅ **RBAC** - Traditional role-based permissions (built on [spatie/laravel-permission](https://github.com/spatie/laravel-permission))
 - ✅ **ABAC** - Attribute-based access control with custom rules
@@ -26,7 +26,7 @@
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 composer require amrshah/laravel-arbac
@@ -66,7 +66,7 @@ This creates `config/arbac.php` where you can configure models, cache, multi-ten
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic RBAC
 
@@ -133,7 +133,7 @@ Arbac::check($user, 'edit post', ['post' => $post]);
 
 ---
 
-## ⚠️ Important: Cache Invalidation
+## Important: Cache Invalidation
 
 ARBAC caches permission checks for performance. **Cache is automatically invalidated** when roles or permissions change:
 
@@ -152,7 +152,7 @@ $permission->update([...]);         // ✅ Cache invalidated
 ],
 ```
 
-**⚠️ Warning:** Direct database updates bypass observers and require manual cache flush:
+**Warning:** Direct database updates bypass observers and require manual cache flush:
 ```php
 // Direct DB update - cache NOT invalidated
 DB::table('model_has_roles')->insert([...]);
@@ -175,7 +175,7 @@ class User extends Authenticatable
 
 ---
 
-## 🛡️ Middleware
+## Middleware
 
 ### Basic Middleware
 
@@ -190,7 +190,7 @@ Route::get('/admin', [AdminController::class, 'index'])
     ->middleware('role:admin');
 ```
 
-### 🌐 IP-Restricted Routes
+### IP-Restricted Routes
 
 Protect routes by IP address:
 
@@ -256,7 +256,7 @@ Route::post('/posts', [PostController::class, 'store'])
 
 ---
 
-## 🎨 Blade Directives
+## Blade Directives
 
 Control what users see in your views:
 
@@ -280,7 +280,7 @@ Control what users see in your views:
 
 ---
 
-## 🏢 Multi-Tenancy
+## Multi-Tenancy
 
 ### What ARBAC Provides
 
@@ -361,7 +361,7 @@ $posts = Post::where('user_id', $user->id)->get(); // May leak across tenants
 
 ---
 
-## ⚡ Caching
+## Caching
 
 ARBAC caches permission checks for optimal performance:
 
@@ -387,7 +387,7 @@ $manager->flushAllCache();
 
 ---
 
-## 📊 Audit Logging
+## Audit Logging
 
 Track all permission checks for compliance and debugging:
 
@@ -443,7 +443,7 @@ $tenantLogs = ArbacAuditLog::tenant()->get();
 
 ---
 
-## ⏰ Time-Based Permissions
+## Time-Based Permissions
 
 Restrict access by time windows:
 
@@ -465,7 +465,7 @@ Arbac::check($user, 'time-restricted.access', [
 
 ---
 
-## 🌐 IP-Based Permissions
+## IP-Based Permissions
 
 Whitelist IPs for sensitive operations:
 
@@ -485,7 +485,7 @@ Arbac::check($user, 'ip-restricted.admin', [
 
 ---
 
-## 🔄 Hierarchical Roles
+## Hierarchical Roles
 
 ### Non-Transitive (Default)
 
@@ -541,7 +541,7 @@ $user->hasRoleOrHigherTransitive('member'); // Walks full hierarchy tree
 
 ---
 
-## 📦 Permission Groups
+## Permission Groups
 
 Bulk manage permissions:
 
@@ -572,7 +572,7 @@ composer test:coverage
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - [Installation Guide](docs/installation.md)
 - [Configuration](docs/configuration.md)
@@ -583,25 +583,25 @@ composer test:coverage
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ---
 
-## 🔒 Security
+## Security
 
 If you discover any security-related issues, please email amrshah@gmail.com instead of using the issue tracker.
 
 ---
 
-## 📄 License
+## License
 
 MIT © Ali Raza (Amr Shah)
 
 ---
 
-## 🙏 Credits
+## Credits
 
 - Built on top of [spatie/laravel-permission](https://github.com/spatie/laravel-permission)
 - Inspired by enterprise authorization systems

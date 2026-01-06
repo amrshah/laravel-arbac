@@ -2,22 +2,25 @@
 
 namespace Amrshah\Arbac\Database\Factories;
 
-use App\Models\User;
+//use App\Modules\Identity\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Identity\Models\User>
  */
 class UserFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
+     * Get the name of the model that is being created.
      *
-     * @var string
+     * @return string
      */
-    protected $model = User::class;
+    public function modelName()
+    {
+        return config('arbac.models.user') ?: config('auth.providers.users.model');
+    }
 
     /**
      * The current password being used by the factory.

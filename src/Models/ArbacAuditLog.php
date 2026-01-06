@@ -52,7 +52,7 @@ class ArbacAuditLog extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(config('arbac.models.user', \App\Models\User::class));
+        return $this->belongsTo(config('arbac.models.user') ?: config('auth.providers.users.model'));
     }
 
     /**
